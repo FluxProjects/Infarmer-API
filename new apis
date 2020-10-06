@@ -1,0 +1,126 @@
+//UPDATE IRRIGATION SCHEDULE FORM API
+router.post('/irrigation_schedule_update', (req, res, next) => {
+
+console.log('Irrigation Schedule API is calling',req.body.F_Data);
+
+values=[{
+
+farm_id:req.body.F_Data.f_farm_id,
+irrigation_date:req.body.F_Data.f_irrigation_date,
+irrigation_qty:req.body.F_Data.f_irrigation_qty,
+map:req.body.F_Data.f_map,
+notes:req.body.F_Data.f_notes,
+created_by:req.body.F_Data.f_created_by,
+created_at:req.body.F_Data.f_created_at,
+modified_by:req.body.F_Data.f_modified_by,
+modified_at:req.body.F_Data.f_modified_at
+
+}];
+
+models.irrigation_schedules.findAll({
+where: {
+farm_id: values[0].farm_id
+}
+})
+.then((data) => {
+if(data.length!=0){
+
+console.log('Request Data is not empty');
+
+
+models.irrigation_schedules.update({  
+
+farm_id:values[0].farm_id,
+irrigation_date:values[0].irrigation_date,
+irrigation_qty:values[0].irrigation_qty,
+map:req.values[0].map,
+notes:values[0].notes,
+created_by:values[0].created_by,
+created_at:values[0].created_at,
+modified_by:values[0].modified_by,
+modified_at:values[0].modified_at
+
+}, {
+where: {
+farm_id:values[0].farm_id
+}
+})
+.then(()=>{
+console.log('200');
+res.status(200)
+  .json({
+  Successful: true,
+  Message: 'Irrigation Schedule Successfully Updated'
+});
+})
+.catch(function (err) {
+console.log(err);
+res.status(404)
+.json({
+Successful: false,
+Message: 'Failed to Update Irrigation Schedule: ' + err
+});
+});
+}
+
+})
+.catch(function (err) {
+        console.log(err);
+        res.status(404)
+            .json({
+                  Message: 'Request Data is empty' + err,
+                  Successful: false
+            });
+    });
+});
+
+
+
+
+router.post('/get_all_users', (req, res, next) => {
+
+ 	models.users.findAll({   
+	})
+        
+    .then((data) => {
+    
+        if (data.length != 0) {
+    
+            console.log('Users Get Successfully');
+			res.status(200)
+                    
+            .json({
+				data: data,
+				Successful: true,
+				Message: 'Users Get Successfully'
+			});
+            
+        } else {
+        
+            console.log('No User Found');
+            res.status(404)
+			.json({
+				Successful: false,
+				Message: 'No User Found'
+			});
+            
+        }
+    
+    })
+    
+    .catch(function (err) {
+    
+        console.log('Failed To Get Users: ',err);
+		res.status(404)
+                
+        .json({
+			Successful: false,
+			Message: 'Failed To Get Users: ' + err
+		});
+    
+    });
+    
+});
+
+
+
